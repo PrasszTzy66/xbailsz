@@ -201,6 +201,30 @@ await client.richMenu(jid, {
 })
 ```
 
+### Split Payment
+
+`splitPayment` is a convenience wrapper that is converted to the native
+`splitPaymentMessage` protobuf shape. Amounts use human units and default to
+an offset of `1000`.
+
+```js
+await client.sendMessage(jid, {
+  splitPayment: {
+    splitId: 'makan-01',
+    total: 150000,
+    currency: 'IDR',
+    description: 'Makan bareng',
+    requesterJid: '628000000000@s.whatsapp.net',
+    participants: [
+      { jid: '628111111111@s.whatsapp.net', amount: 50000 },
+      { jid: '628222222222@s.whatsapp.net', amount: 100000, status: 'PAID' }
+    ]
+  }
+})
+```
+
+For direct protobuf use, `splitPaymentMessage` remains supported as well.
+
 ```js
 // Product message (catalog)
 await client.relayMessage(jid, {
