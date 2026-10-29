@@ -22,7 +22,7 @@ Add it to your `package.json`:
 ```json
 {
   "dependencies": {
-    "@whiskeysockets/baileys": "github:PrassszTzy66/xbails"
+    "@whiskeysockets/baileys": "github:PrassszTzy66/xbailsz"
   }
 }
 ```
