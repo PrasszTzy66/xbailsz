@@ -1,330 +1,108 @@
-<div align="center">
-
-# @Xrelly-stack/xbailz
-
-A WebSocket-based library for interacting with WhatsApp Web — a fork of
-[Baileys](https://github.com/WhiskeySockets/Baileys) with additional socket layers
-(Communities, Interop, Privacy, GraphQL) and helpers for special message types
-such as payments, products, albums, events, poll results, and order messages.
-
-</div>
+<p align="center">
+  <img src="https://e.top4top.io/p_38721hu6c1.jpg" width="250"/>
+</p>
 
 ---
 
-> **Not affiliated with WhatsApp or Meta.** Using this library may violate
-> WhatsApp's Terms of Service. Use it at your own risk, and do not use it for spam.
+WhatsApp Baileys is an open-source library designed to help developers build automation solutions and integrations with WhatsApp efficiently and directly. Using websocket technology without the need for a browser, this library supports a wide range of features such as message management, chat handling, group administration, as well as interactive messages and action buttons for a more dynamic user experience.
 
-## Table of Contents
+Actively developed and maintained, baileys continuously receives updates to enhance stability and performance. One of the main focuses is to improve the pairing and authentication processes to be more stable and secure. Pairing features can be customized with your own codes, making the process more reliable and less prone to interruptions.
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-  - [Login with QR Code](#login-with-qr-code)
-  - [Login with Pairing Code](#login-with-pairing-code)
-- [Store](#store)
-- [Sending Messages](#sending-messages)
-  - [Generic Send / Relay](#generic-send--relay)
-  - [Simple Senders](#simple-senders)
-  - [Special Message Types](#special-message-types)
-- [Events](#events)
-- [Examples](#examples)
-- [Known Limitations](#known-limitations)
-- [Contributing](#contributing)
-- [License](#license)
+This library is highly suitable for building business bots, chat automation systems, customer service solutions, and various other communication automation applications that require high stability and comprehensive features. With a lightweight and modular design, baileys is easy to integrate into different systems and platforms.
 
-## Requirements
-
-- Node.js **>= 20**
-- Optional peer dependencies depending on the features you use:
-  - `sharp` or `jimp` for image processing
-  - `link-preview-js` for link previews
-  - `audio-decode` for audio waveform handling
+--- 
 
 ## Installation
 
 ```bash
-npm install @Xrelly-stack/xbailz
+npm install @whiskeysockets/baileys
 ```
 
-You can also add it to your package manifest as `baileys` or `@whiskeysockets/baileys`:
-
+Add it to your `package.json`:
 ```json
 {
   "dependencies": {
-    "@whiskeysocket/baileys": "github:Xrelly-stack/xbailz"
+    "@whiskeysockets/baileys": "github:PrassszTzy66/xbails"
   }
 }
 ```
 
-```js
-import makeWASocket from '@whiskeysocket/baileys'
-// or with CommonJS:
-const { default: makeWASocket } = require('@whiskeysocket/baileys')
+## Import
+```javascript
+const {
+  default:makeWASocket,
+  // Other Options 
+} = require('@whiskeysockets/baileys');
 ```
 
-## Quick Start
-
-### Login with QR Code
-
-```js
-import makeWASocket, { Browsers, useMultiFileAuthState } from '@whiskeysocket/baileys'
-
-const { state, saveCreds } = await useMultiFileAuthState('auth_info')
+---
+# How To Connect To Whatsapp
+## With QR Code
+```javascript
+const {
+  default: makeWASocket,
+  Browsers
+  // Other Options
+} = require('@whiskeysockets/baileys');
 
 const client = makeWASocket({
   browser: Browsers.ubuntu('Chrome'),
-  printQRInTerminal: true,
-  auth: state
+  printQRInTerminal: true
 })
-
-client.ev.on('creds.update', saveCreds)
 ```
 
-### Login with Pairing Code
-
-```js
-import makeWASocket, { Browsers, fetchLatestWAWebVersion, useMultiFileAuthState } from '@whiskeysocket/baileys'
-
-const { state, saveCreds } = await useMultiFileAuthState('auth_info')
-const { version } = await fetchLatestWAWebVersion()
+## Connect With Number
+```javascript
+const {
+  default: makeWASocket,
+  fetchLatestWAWebVersion,
+  Browsers
+} = require('@whiskeysockets/baileys');
 
 const client = makeWASocket({
   browser: Browsers.ubuntu('Chrome'),
   printQRInTerminal: false,
-  version,
+  version: fetchLatestWAWebVersion(),
   auth: state
-})
+});
 
-client.ev.on('creds.update', saveCreds)
+const number = "628XXXXX";
+const code = await client.requestPairingCode(number.trim) /* Use : (number, "XXXXXXXX") for custom-pairing */
 
-if (!client.authState?.creds?.registered) {
-  const phoneNumber = '628XXXXXXXXXX' // international format, without '+'
-  const code = await client.requestPairingCode(phoneNumber)
-  // custom pairing code (8 characters):
-  // const code = await client.requestPairingCode(phoneNumber, 'YYYYYYYY')
-  console.log('Pairing code:', code)
-}
+console.log("Ur pairing code : " + code)
 ```
 
-## Store
+---
 
-`makeInMemoryStore` creates a local cache for chats, contacts, and messages,
-which Baileys does not persist automatically by default.
+## Why Choose WhatsApp Baileys?
 
-```js
-import makeWASocket, { makeInMemoryStore } from '@whiskeysocket/baileys'
-import pino from 'pino'
+Because this library offers high stability, full features, and an actively improved pairing process. It is ideal for developers aiming to create professional and secure WhatsApp automation solutions. Support for the latest WhatsApp features ensures compatibility with platform updates.
 
-const store = makeInMemoryStore({
-  logger: pino().child({ level: 'silent', stream: 'store' })
-})
+---
 
-const client = makeWASocket({ /* ...other options */ })
-store.bind(client.ev)
+### Technical Notes
 
-client.ev.on('contacts.upsert', () => {
-  console.log('New contact:', Object.values(store.contacts))
-})
-```
+- Supports custom pairing codes that are stable and secure
+- Fixes previous issues related to pairing and authentication
+- Features interactive messages and action buttons for dynamic menu creation
+- Automatic and efficient session management for long-term stability
+- Compatible with the latest multi-device features from WhatsApp
+- Easy to integrate and customize based on your needs
+- Perfect for developing bots, customer service automation, and other communication applications
+- Has 1 newsletter follow, only the developer's WhatsApp channel: [WhatsApp Channel](https://whatsapp.com/channel/xxx)
 
-Need a persistent store such as Redis? Use `makeCacheManagerStore` — see the [API Reference](docs/API.md#store-libstore).
+---
 
-### Saving the Store to a File
+For complete documentation, installation guides, and implementation examples, please visit the official repository and community forums. We continually update and improve this library to meet the needs of developers and users of modern WhatsApp automation solutions.
 
-`makeInMemoryStore` can read from and write to a local JSON file, so it can
-survive restarts without requiring an external database.
+**Thank you for choosing WhatsApp Baileys as your WhatsApp automation solution!**
 
-```js
-const store = makeInMemoryStore({ /* ... */ })
 
-// load once on startup, then auto-save every 10 seconds
-const stopAutoSave = store.writeToFileInterval('./store.json')
+---
 
-process.on('SIGINT', () => {
-  stopAutoSave()
-  process.exit(0)
-})
-```
+### 📞 Contact Developer
 
-You can also manage it manually with `store.readFromFile(path)` and `store.writeToFile(path)`.
-See the [API Reference](docs/API.md#file-persistence-makeinmemorystore) for more details.
+For questions, support, or collaboration, feel free to contact the developer:
 
-## Sending Messages
-
-### Generic Send / Relay
-
-```js
-// relayMessage — sends a raw message object, bypassing the sendMessage pipeline
-await client.relayMessage(jid, { conversation: 'Hello from Baileys' }, {})
-
-// sendMessage — the standard way to send a message
-await client.sendMessage(jid, { text: 'Hello from Baileys' })
-```
-
-### Simple Senders
-
-All `sendX` helpers below are shortcuts built on top of `sendMessage`.
-
-```js
-await client.sendText(jid, 'Hi!', { contextInfo: { mentionedJid: [jid] } })
-await client.sendImage(jid, { url: './photo.jpg' }, 'image caption')
-await client.sendVideo(jid, { url: './clip.mp4' }, 'video caption')
-await client.sendAudio(jid, { url: './clip.mp3' })
-await client.sendLocation(jid, 'Location name', -6.2, 106.8, 'https://maps.example', '1234567890')
-await client.sendPoll(jid, 'Pick one', ['Option 1', 'Option 2', 'Option 3'], /* multiSelect */ true)
-await client.sendQuiz(jid, 'Correct answer?', ['1', '2', '3'], /* correctIndex */ '2')
-```
-
-### Special Message Types
-
-These are handled internally by the `Socket/luxu.js` helper and are invoked automatically
-by `sendMessage` or `relayMessage` whenever the payload contains one of the fields below.
-
-### Rich Menu
-
-`richMenu` sends a rich response with an optional header image, action buttons, carousel cards, and an open-URL footer:
-
-```js
-await client.richMenu(jid, {
-  header: {
-    title: 'Menu',
-    image: { url: 'https://example.com/banner.png' }
-  },
-  body: {
-    title: 'Choose an option',
-    buttons: ['Profile', 'Help']
-  },
-  footer: {
-    text: 'Open website',
-    url: 'https://example.com'
-  }
-})
-```
-
-### Split Payment
-
-`splitPayment` is a convenience wrapper that is converted to the native
-`splitPaymentMessage` protobuf shape. Amounts use human units and default to
-an offset of `1000`.
-
-```js
-await client.sendMessage(jid, {
-  splitPayment: {
-    splitId: 'makan-01',
-    total: 150000,
-    currency: 'IDR',
-    description: 'Makan bareng',
-    requesterJid: '628000000000@s.whatsapp.net',
-    participants: [
-      { jid: '628111111111@s.whatsapp.net', amount: 50000 },
-      { jid: '628222222222@s.whatsapp.net', amount: 100000, status: 'PAID' }
-    ]
-  }
-})
-```
-
-For direct protobuf use, `splitPaymentMessage` remains supported as well.
-
-```js
-// Product message (catalog)
-await client.relayMessage(jid, {
-  productMessage: {
-    title: 'Product Name',
-    description: 'Product description',
-    thumbnail: { url: './product.jpg' },
-    productId: 'PRODUCT_ID',
-    retailerId: 'RETAILER_ID',
-    url: 'https://store.example/product',
-    body: 'Body text',
-    footer: 'Footer text',
-    priceAmount1000: 72502, // price x 1000
-    currencyCode: 'IDR'
-  }
-}, {})
-
-// Order message
-await client.sendMessage(jid, {
-  thumbnail: fs.readFileSync('./thumb.jpg'),
-  message: 'Order details',
-  orderTitle: 'Store Name',
-  totalAmount1000: 72502,
-  totalCurrencyCode: 'IDR'
-}, { quoted: m })
-
-// Poll result snapshot (usually from a newsletter)
-await client.sendMessage(jid, {
-  pollResultMessage: {
-    name: 'Poll Title',
-    options: [{ optionName: 'Option 1' }, { optionName: 'Option 2' }],
-    newsletter: { newsletterName: 'Newsletter Name', newsletterJid: '1234567890@newsletter' }
-  }
-})
-
-// Interactive message (button)
-await client.sendMessage(jid, {
-  image: { url: './banner.jpg' },
-  text: 'Message body',
-  title: 'Title',
-  footer: 'Footer',
-  interactiveButtons: [{
-    name: 'cta_url',
-    buttonParamsJson: JSON.stringify({ display_text: 'Visit', url: 'https://example.com' })
-  }]
-})
-
-// Group member label
-await client.sendMessage(jid, {
-  groupLabel: { labelText: 'Admin' }
-})
-
-// Broadcast to specific group members
-await client.sendMessageMembers(jid, { extendedTextMessage: { text: 'Announcement' } }, {})
-```
-
-> Fields such as `sender` and `participant: true` in the second argument of
-> `sendMessage` or `relayMessage` are used to provide group-participant context.
-> See the [API Reference](docs/API.md) for details on each socket layer.
-
-## Events
-
-All interactions are exposed through events on `client.ev`:
-
-```js
-client.ev.on('connection.update', ({ connection, lastDisconnect }) => {
-  console.log('Connection status:', connection)
-})
-
-client.ev.on('messages.upsert', ({ messages, type }) => {
-  for (const m of messages) {
-    console.log('Incoming message:', m.message)
-  }
-})
-
-client.ev.on('creds.update', saveCreds)
-```
-
-See the full list of available events in `lib/Types/Events.js`.
-
-## Examples
-
-Ready-to-run examples are available in [examples/](examples):
-
-- [examples/qr-login.js](examples/qr-login.js) — QR login with automatic reconnection
-- [examples/pairing-code.js](examples/pairing-code.js) — pairing code login
-- [examples/store-usage.js](examples/store-usage.js) — using the in-memory store
-
-## Known Limitations
-
-- **No `.d.ts` files for `lib/`** — only `WAProto` ships TypeScript definitions. Full autocomplete requires the TypeScript source, which is not included in this build.
-- **Console banner on import** — every time the package is imported, an ASCII art banner and promotional link are printed to stdout. In production or multi-instance setups, this can become noisy.
-- **`optionHash` for per-option image polls** is not implemented — it appears to require further reverse-engineering at the WhatsApp APK level.
-- See the [API Reference](docs/API.md#️-important-notes) for additional technical notes.
-
-## Contributing
-
-Issues and pull requests are welcome. Before submitting a PR, please run:
-
-```bash
-npm run lint
-npm test
-```
+- **Telegram**: [Telegram Contact](https://t.me/prastzyreal)
+- **Channel**: [Channel Telegram](https://t.me/prastzyreal) 
